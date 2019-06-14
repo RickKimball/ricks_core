@@ -1,0 +1,25 @@
+{
+    "configurations": [
+        {
+            "name": "linux",
+            "includePath": [
+                ".",
+                "system/Drivers/CMSIS/Include",
+                "system/Drivers/CMSIS/Device/ST/STM32F3xx/Include",
+                "system/include",
+                "cores/arduino",
+                "cores/arduino/api",
+                "variants/robotdyn_f303cc"
+            ],
+            "defines": [
+                "F_CPU=72000000",
+                "STM32F303xC"
+            ],
+            "compilerPath": "/usr/bin/arm-none-eabi-g++ -mcpu=cortex-m4 -mthumb -specs=nano.specs",
+            "cStandard": "c11",
+            "cppStandard": "c++14",
+            "intelliSenseMode": "gcc-x64"
+        }
+    ],
+    "version": 4
+}

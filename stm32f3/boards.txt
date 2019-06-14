@@ -1,0 +1,140 @@
+# See: http://code.google.com/p/arduino/wiki/Platforms
+
+menu.pnum=MCPU
+menu.mclk=MCLK
+menu.compiler=Compiler
+menu.std_c=C std
+menu.std_cpp=C++ std
+menu.optimize=Optimization
+menu.runtime=Run Time
+menu.uploader=Upload via
+
+#------------------------------------------------------
+robotdyn.vid.0=0x0483
+robotdyn.pid.0=0x374b
+robotdyn.name=RobotDyn F303CC Board
+
+#------------------------------------------------------
+robotdyn.build.core=arduino
+robotdyn.build.board=ROBOTDYN_STM32F303CC
+robotdyn.build.vect=-DVECT_TAB_OFFSET=0x08000000
+robotdyn.build.extra_flags=-DHAS_EXTERN_XTAL -DSTM32F303CCTx -DSTM32F303xC 
+
+#------------------------------------------------------
+robotdyn.menu.mclk.00=72MHz
+#robotdyn.menu.mclk.00.build.f_cpu=72000000L
+robotdyn.menu.mclk.01=8MHz
+robotdyn.menu.mclk.01.build.f_cpu=8000000L
+#robotdyn.menu.mclk.02=12MHz
+#robotdyn.menu.mclk.02.build.f_cpu=12000000L
+robotdyn.menu.mclk.03=16MHz
+robotdyn.menu.mclk.03.build.f_cpu=16000000L
+#robotdyn.menu.mclk.04=20MHz
+#robotdyn.menu.mclk.04.build.f_cpu=20000000L
+robotdyn.menu.mclk.05=24MHz
+robotdyn.menu.mclk.05.build.f_cpu=24000000L
+#robotdyn.menu.mclk.06=28MHz
+#robotdyn.menu.mclk.06.build.f_cpu=28000000L
+robotdyn.menu.mclk.07=32MHz
+robotdyn.menu.mclk.07.build.f_cpu=32000000L
+#robotdyn.menu.mclk.08=36MHz
+#robotdyn.menu.mclk.08.build.f_cpu=36000000L
+robotdyn.menu.mclk.09=40MHz
+robotdyn.menu.mclk.09.build.f_cpu=40000000L
+#robotdyn.menu.mclk.10=44MHz
+#robotdyn.menu.mclk.10.build.f_cpu=44000000L
+robotdyn.menu.mclk.11=48MHz
+robotdyn.menu.mclk.11.build.f_cpu=48000000L
+#robotdyn.menu.mclk.12=52MHz
+#robotdyn.menu.mclk.12.build.f_cpu=52000000L
+robotdyn.menu.mclk.13=56MHz
+robotdyn.menu.mclk.13.build.f_cpu=56000000L
+#robotdyn.menu.mclk.14=60MHz
+#robotdyn.menu.mclk.14.build.f_cpu=60000000L
+robotdyn.menu.mclk.15=64MHz
+robotdyn.menu.mclk.15.build.f_cpu=64000000L
+robotdyn.menu.mclk.16=80MHz(overclock 11%)
+robotdyn.menu.mclk.16.build.f_cpu=80000000L
+#robotdyn.menu.mclk.17=88MHz(overclock 22%)
+#robotdyn.menu.mclk.17.build.f_cpu=88000000L
+#robotdyn.menu.mclk.18=96MHz(overclock 33%)
+#robotdyn.menu.mclk.18.build.f_cpu=96000000L
+
+#------------------------------------------------------
+robotdyn.menu.pnum.robotdyn_f303cc=stm32F303cc (256k/20k)
+robotdyn.menu.pnum.robotdyn_f303cc.build.board=robotdyn_f303cc
+robotdyn.menu.pnum.robotdyn_f303cc.build.ldscript=-Tstm32f303cc.ld
+robotdyn.menu.pnum.robotdyn_f303cc.build.mcu=cortex-m4
+robotdyn.menu.pnum.robotdyn_f303cc.build.variant=robotdyn_f303cc
+robotdyn.menu.pnum.robotdyn_f303cc.upload.maximum_data_size=40960
+robotdyn.menu.pnum.robotdyn_f303cc.upload.maximum_size=262144
+
+#------------------------------------------------------
+robotdyn.menu.compiler.0=arm-none-eabi-gcc
+#robotdyn.menu.compiler.0.build.compiler.path=
+
+#------------------------------------------------------
+robotdyn.menu.optimize.os=Small -Os
+#robotdyn.menu.optimize.os.build.opt_flag=-Os
+robotdyn.menu.optimize.og=Debug -Og
+robotdyn.menu.optimize.og.build.opt_flag=-Og
+robotdyn.menu.optimize.o0=None -O0
+robotdyn.menu.optimize.o0.build.opt_flag=-O0
+robotdyn.menu.optimize.o1=Some -O1
+robotdyn.menu.optimize.o1.build.opt_flag=-O1
+robotdyn.menu.optimize.o2=More -O2
+robotdyn.menu.optimize.o2.build.opt_flag=-O2
+robotdyn.menu.optimize.o3=Most -O3
+robotdyn.menu.optimize.o3.build.opt_flag=-O3
+
+#------------------------------------------------------
+robotdyn.menu.std_c.0=gnu11
+#robotdyn.menu.std_c.0.build.std_c=gnu11
+robotdyn.menu.std_c.1=gnu99
+robotdyn.menu.std_c.1.build.std_c=gnu99
+
+#------------------------------------------------------
+robotdyn.menu.std_cpp.0=gnu++11
+robotdyn.menu.std_cpp.0.build.std_cpp=gnu++11
+robotdyn.menu.std_cpp.1=gnu++14
+#robotdyn.menu.std_cpp.1.build.std_cpp=gnu++14 (default)
+#robotdyn.menu.std_cpp.2=gnu++17
+#robotdyn.menu.std_cpp.2.build.std_cpp=gnu++17
+#robotdyn.menu.std_cpp.3=gnu++2a
+#robotdyn.menu.std_cpp.3.build.std_cpp=gnu++2a
+
+#------------------------------------------------------
+robotdyn.menu.runtime.0=nano.specs (no float)
+#robotdyn.menu.runtime.0.build.compiler.rt_cflags=-specs=nano.specs
+#robotdyn.menu.runtime.0.build.compiler.rt_ldflags=-lm -specs=nosys.specs -specs=nano.specs
+robotdyn.menu.runtime.1=nano.specs (with printf_float)
+robotdyn.menu.runtime.1.build.compiler.rt_cflags=-specs=nano.specs
+robotdyn.menu.runtime.1.build.compiler.rt_ldflags=-lm -specs=nosys.specs -specs=nano.specs -u _printf_float
+robotdyn.menu.runtime.2=nano.specs (with scanf_float)
+robotdyn.menu.runtime.2.build.compiler.rt_cflags=-specs=nano.specs
+robotdyn.menu.runtime.2.build.compiler.rt_ldflags=-lm -specs=nosys.specs -specs=nano.specs -u _scanf_float
+robotdyn.menu.runtime.3=nano.specs (with printf_float & scanf_float)
+robotdyn.menu.runtime.3.build.compiler.rt_cflags=-specs=nano.specs
+robotdyn.menu.runtime.3.build.compiler.rt_ldflags=-lm -specs=nosys.specs -specs=nano.specs -u _scanf_float -u _printf_float
+robotdyn.menu.runtime.4=newlib (full)
+robotdyn.menu.runtime.4.build.compiler.rt_cflags=
+robotdyn.menu.runtime.4.build.compiler.rt_ldflags=-lm
+
+#------------------------------------------------------
+robotdyn.menu.uploader.openocd=STlink w/openocd
+robotdyn.menu.uploader.openocd.upload.tool=openocd
+robotdyn.menu.uploader.openocd.upload.protocol=stlink
+
+robotdyn.menu.uploader.openocd_debug=STlink w/openocd+debug
+robotdyn.menu.uploader.openocd_debug.upload.tool=openocd_debug
+robotdyn.menu.uploader.openocd_debug.upload.protocol=stlink
+
+robotdyn.menu.uploader.dfu=DFU (ROM bootloader)
+robotdyn.menu.uploader.dfu.upload.tool=dfu_upload
+robotdyn.menu.uploader.dfu.upload.protocol=custom
+
+robotdyn.menu.uploader.serial=Serial
+robotdyn.menu.uploader.serial.upload.tool=serial_upload
+robotdyn.menu.uploader.serial.upload.protocol=stm32flash
+
+#--EOF--

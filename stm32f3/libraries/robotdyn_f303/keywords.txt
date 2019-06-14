@@ -1,0 +1,35 @@
+#######################################
+# Syntax Coloring Map For wiringEx
+#######################################
+
+#######################################
+# Library (KEYWORD3)
+#######################################
+
+#######################################
+# Datatypes (KEYWORD1)
+#######################################
+
+wiringEx	KEYWORD1
+
+#######################################
+# Methods and Functions (KEYWORD2)
+#######################################
+
+digitalWriteEx	KEYWORD2
+digitalReadEx	KEYWORD2
+pinModeEx	KEYWORD2
+
+#######################################
+# Constants (LITERAL1)
+#######################################
+ALT_FUNC	LITERAL1
+ALT_FUNC_OPEN_DRAIN	LITERAL1
+INPUT_ANALOG	LITERAL1
+INPUT_PULLDOWN	LITERAL1
+INPUT_PULLUP	LITERAL1
+OUTPUT_MCO	LITERAL1
+OUTPUT_OPEN_DRAIN	LITERAL1
+
+# vim: set ts=24 sw=24 noexpandtab :
+

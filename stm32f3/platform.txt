@@ -1,0 +1,200 @@
+# stm32f303 arm cortex-m4 support
+# ------------------------------
+#
+# For more info:
+# https://github.com/arduino/Arduino/wiki/Arduino-IDE-1.5-3rd-party-Hardware-specification
+
+name=Rick's Core for STM32F3 ARM Boards
+version=1.0.0
+
+# gcc compile variables
+# --------------------- 
+
+#-------------------------------------------------
+# These defaults can be overriden in boards.txt
+build.arch=stm32f3
+build.compiler.defs=-DFIXMATH_NO_CACHE -DFIXMATH_NO_ROUNDING -DSTM32 -DSTM32F3 -DARM_MATH_CM4 {build.vect}
+build.compiler.includes=-I {build.system.path}/Drivers/CMSIS/Device/ST/STM32F3xx/Include -I {build.system.path}/Drivers/CMSIS/Include -I {build.system.path}/include
+build.compiler.lddir=-L "{build.variant.path}"
+build.compiler.rt_cflags=-specs=nano.specs
+build.compiler.rt_ldflags=-lm -specs=nosys.specs -specs=nano.specs
+build.compiler.ldflags=-nostartfiles
+build.compiler.path=
+build.compiler.prefix=arm-none-eabi-
+build.extra_flags=
+build.f_cpu=72000000L
+build.mcpu=cortex-m4
+build.opt_flag=-Os
+build.std_c=gnu11
+build.std_cpp=gnu++14
+
+#-------- adds 10k but gets floating point printf --------------------------------------------------
+#build.compiler.ldflags=-lm -nostartfiles -specs=nosys.specs -specs=nano.specs -u _printf_float -lm
+
+compiler.warning_flags=-w
+compiler.warning_flags.none=-w
+compiler.warning_flags.default=
+compiler.warning_flags.more=-Wall
+compiler.warning_flags.all=-Wall -Wextra
+
+# use cortex-m compiler selections from boards.txt
+compiler.path={build.compiler.path}
+compiler.prefix={build.compiler.prefix}
+compiler.c.includes={build.compiler.includes}
+compiler.c.defs={build.compiler.defs}
+compiler.ld.flags={build.ldscript} {build.compiler.ldflags} {build.compiler.rt_ldflags}
+compiler.ld.dir={build.compiler.lddir}
+
+compiler.c.optimize={build.opt_flag}
+compiler.c.flags_f=-fsingle-precision-constant -fwrapv -fno-common -fno-asynchronous-unwind-tables -fomit-frame-pointer -ffunction-sections -fdata-sections
+#compiler.c.flags_f=-fsingle-precision-constant -fwrapv -fno-common -fno-asynchronous-unwind-tables -fomit-frame-pointer -ffunction-sections
+compiler.c.flags_common=-c -g3 {compiler.warning_flags} {compiler.c.optimize} {compiler.c.defs} {compiler.c.flags_f} {compiler.c.includes} {build.compiler.rt_cflags}
+
+compiler.c.cmd={compiler.prefix}gcc
+compiler.c.flags=-std={build.std_c} {compiler.c.flags_common}
+
+compiler.c.elf.flags=-g3 {compiler.warning_flags} {compiler.c.optimize}
+compiler.c.elf.cmd={compiler.prefix}g++
+
+compiler.cpp.cmd={compiler.prefix}g++
+compiler.cpp.flags=-std={build.std_cpp} {compiler.c.flags_common} -fno-rtti -fno-exceptions -fno-threadsafe-statics -fno-use-cxa-atexit -felide-constructors
+compiler.S.flags=-c -x assembler-with-cpp
+
+compiler.ar.cmd={compiler.prefix}ar
+compiler.ar.flags=rcs
+
+compiler.objcopy.cmd={compiler.prefix}objcopy
+
+compiler.elf2hex.flags=-O ihex
+compiler.elf2hex.cmd={compiler.prefix}objcopy
+
+compiler.size.cmd={compiler.prefix}size
+
+compiler.dump.flags=-CS
+compiler.dump.cmd=
+
+# These can be overridden in platform.local.txt
+compiler.c.extra_flags=
+compiler.c.elf.extra_flags=
+compiler.S.extra_flags=
+compiler.cpp.extra_flags=
+compiler.ar.extra_flags=
+compiler.elf2hex.extra_flags=
+
+# fabooh compile patterns
+# --------------------
+
+## Compile c files
+recipe.c.o.pattern="{compiler.path}{compiler.c.cmd}" {compiler.c.flags} -mcpu={build.mcpu} -mthumb -DF_CPU={build.f_cpu} -DARDUINO={runtime.ide.version} -DFABOOH_{build.board} "-DFABOOH_{build.arch}" -DFABOOH {compiler.c.extra_flags} {build.extra_flags} {includes} "{source_file}" -o "{object_file}"
+
+## Compile c++ files
+recipe.cpp.o.pattern="{compiler.path}{compiler.cpp.cmd}" {compiler.cpp.flags} -mcpu={build.mcpu} -mthumb -DF_CPU={build.f_cpu} -DARDUINO={runtime.ide.version} -DFABOOH_{build.board} "-DFABOOH_{build.arch}" -DFABOOH {compiler.cpp.extra_flags} {build.extra_flags} {includes} "{source_file}" -o "{object_file}"
+
+## Compile S files
+recipe.S.o.pattern="{compiler.path}{compiler.c.cmd}" {compiler.S.flags} -mcpu={build.mcpu} -mthumb -DF_CPU={build.f_cpu} -DARDUINO={runtime.ide.version} -DFABOOH_{build.board} "-DFABOOH_{build.arch}" -DFABOOH {compiler.S.extra_flags} {build.extra_flags} {includes} "{source_file}" -o "{object_file}"
+
+## Create archives
+recipe.ar.pattern="{compiler.path}{compiler.ar.cmd}" {compiler.ar.flags} {compiler.ar.extra_flags} "{archive_file_path}" "{object_file}"
+
+## Combine gc-sections, archives, and objects
+recipe.c.combine.pattern="{compiler.path}{compiler.c.elf.cmd}" {compiler.c.elf.flags} -mcpu={build.mcpu} -mthumb {compiler.c.elf.extra_flags} {object_files} "{archive_file_path}" -L "{build.path}" {compiler.ld.dir} {compiler.ld.flags} "-Wl,--gc-sections,-Map,{build.path}/{build.project_name}.map" -o "{build.path}/{build.project_name}.elf"
+
+## Create output files (.hex)
+recipe.objcopy.hex.pattern="{compiler.path}{compiler.elf2hex.cmd}" {compiler.elf2hex.flags} {compiler.elf2hex.extra_flags} "{build.path}/{build.project_name}.elf" "{build.path}/{build.project_name}.hex"
+
+## Post build
+recipe.hooks.postbuild.1.pattern="{runtime.platform.path}/tools/postbuild.sh" "{build.path}" "{build.project_name}"
+
+## Save hex
+recipe.output.tmp_file={build.project_name}.hex
+recipe.output.save_file={build.project_name}.{build.variant}.hex
+
+## Compute size
+recipe.size.pattern="{compiler.path}{compiler.size.cmd}" -A "{build.path}/{build.project_name}.elf"
+#recipe.size.regex=^(?:\.isr_vector|\.text|\.data|\.rodata|\.init_array|\.preinit_array|\.fini_array)\s+([0-9]+).*
+recipe.size.regex=^(?:\.text|\.data|\.rodata|\.init_array|\.preinit_array|\.fini_array)\s+([0-9]+).*
+recipe.size.regex.data=^(?:\.data|\.bss|\.noinit)\s+([0-9]+).*
+recipe.size.regex.eeprom=^(?:\.eeprom)\s+([0-9]+).*
+
+## Preprocessor
+preproc.includes.flags=-w -x c++ -M -MG -MP
+recipe.preproc.includes="{compiler.path}{compiler.cpp.cmd}" {compiler.cpp.flags} {preproc.includes.flags} -mcpu={build.mcpu} -mthumb -DF_CPU={build.f_cpu} -DARDUINO={runtime.ide.version} -DFABOOH_{build.board} "-DFABOOH_{build.arch}" -DFABOOH {compiler.cpp.extra_flags} {build.extra_flags} {includes} "{source_file}"
+
+preproc.macros.flags=-w -x c++ -E -CC
+recipe.preproc.macros="{compiler.path}{compiler.cpp.cmd}" {compiler.cpp.flags} {preproc.macros.flags} -mcpu={build.mcpu} -mthumb -DF_CPU={build.f_cpu} -DARDUINO={runtime.ide.version} -DFABOOH_{build.board} "-DFABOOH_{build.arch}" -DFABOOH {compiler.cpp.extra_flags} {build.extra_flags} {includes} "{source_file}" -o "{preprocessed_file_path}"
+
+# cortexm Uploader/Programmers tools
+# -----------------------------------
+
+# blackmagic probe
+tools.bmp.port=/dev/ttyACM0
+tools.bmp.speed=230400
+
+tools.bmp.path=
+tools.bmp.cmd=arm-none-eabi-gdb
+tools.bmp.upload.params.quiet=--batch-silent 
+tools.bmp.upload.params.verbose=-batch
+tools.bmp.prog_func=-ex 'set confirm off' -ex 'monitor swdp_scan' -ex 'attach 1' -ex "file {build.project_name}.elf" -ex load -ex kill -ex detach
+tools.bmp.upload.pattern="{path}{cmd}" -cd={build.path} -batch -nh -b {speed} {upload.verbose} -ex "target extended-remote {port}" {prog_func} -ex 'mon swd' -ex 'quit'
+
+# blackmagic probe+debug
+tools.bmp_debug.port=/dev/ttyACM0
+tools.bmp_debug.speed=230400
+
+tools.bmp_debug.path=
+tools.bmp_debug.cmd=arm-none-eabi-gdb
+tools.bmp_debug.upload.params.quiet=-q
+tools.bmp_debug.upload.params.verbose=
+tools.bmp_debug.upload.pattern=/usr/bin/xterm -fg "#f0f0f0" -bg "#000000" -T "Arduino Debugger" -e "{path}{cmd}" -cd={build.path} -nh -b {speed} {upload.verbose} -ex "set pagination off" -ex "set confirm off" -ex "set mem inaccessible-by-default off" -ex "source {runtime.platform.path}/tools/armv7m-vecstate.gdb" -ex "stop" -ex "file {build.project_name}.elf" -ex "target extended-remote {port}" -ex "monitor swdp_scan" -ex "attach 1" -ex "layout split" -ex "load" -ex "tb setup" -ex "run"
+
+# how to silence bmp
+#tools.bmp.upload.params.quiet=--batch-silent -ex "set logging file /dev/null" -ex "set logging redirect on" -ex "set logging on"
+
+# blackmagic probe upload via programmer
+tools.bmp.program.params.quiet=--batch-silent
+tools.bmp.program.params.verbose=-batch
+tools.bmp.program.pattern="{path}{cmd}" -cd={build.path} -ex "file {build.project_name}.elf" -nh -b {speed} {program.verbose} -ex "target extended-remote {port}" -ex "monitor swdp_scan" -ex "attach 1" -ex "load"
+
+# DFU upload
+tools.dfu_upload.path=
+tools.dfu_upload.cmd=dfu-util
+tools.dfu__upload.upload.params.quiet=
+tools.dfu_upload.upload.params.verbose=
+tools.dfu_upload.upload.pattern="{path}{cmd}" -d 0483:df11 -a 0 -s 0x08000000 -D "{build.path}/{build.project_name}.bin"
+
+# HID upload
+tools.hid_upload.path=/mnt/vbox/shared/github/STM32_HID_Bootloader/cli/
+tools.hid_upload.cmd=hid-flash
+tools.hid__upload.upload.params.quiet=
+tools.hid_upload.upload.params.verbose=
+tools.hid_upload.upload.pattern="{path}{cmd}" "{build.path}/{build.project_name}.bin" {serial.port}
+
+# openocd + stlink
+tools.openocd.path=
+tools.openocd.cmd=openocd
+tools.openocd.upload.protocol=stlink
+tools.openocd.upload.params.quiet=-d0
+tools.openocd.upload.params.verbose=-d1
+tools.openocd.upload.pattern="{path}{cmd}" {upload.verbose} -f interface/{upload.protocol}.cfg -f target/stm32f3x.cfg -c "program {build.path}/{build.project_name}.hex verify reset exit"
+
+# openocd+stlink+debug
+tools.openocd_debug.path={runtime.platform.path}/tools/
+tools.openocd_debug.cmd=arduino-debugger
+tools.openocd_debug.upload.protocol=stlink
+tools.openocd_debug.upload.params.quiet=-d0
+tools.openocd_debug.upload.params.verbose=-d1
+tools.openocd_debug.upload.pattern="{path}{cmd}" {upload.verbose} "{build.path}" "{build.project_name}"
+
+# serial upload
+tools.serial_upload.path=
+tools.serial_upload.cmd=stm32flash
+tools.serial_upload.upload.params.quiet=-q
+tools.serial_upload.upload.params.verbose=
+tools.serial_upload.upload.pattern="{path}{cmd}" -w "{build.path}/{build.project_name}.bin" -R -g 0 {serial.port}
+
+# stlink upload via programmer
+tools.openocd.program.params.quiet=-d0
+tools.openocd.program.params.verbose=-d1
+tools.openocd.program.pattern="{path}{cmd}" {program.verbose} -f interface/{program.protocol}.cfg -f target/stm32f3x.cfg -c "program {build.path}/{build.project_name}.hex verify reset exit"
+
+#EOF

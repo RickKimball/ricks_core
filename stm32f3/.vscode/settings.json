@@ -1,0 +1,25 @@
+{
+    "files.associations": {
+        "*.re": "cpp",
+        "*.ino": "cpp",
+        "errno.h": "c",
+        "times.h": "c",
+        "task.h": "c",
+        "unistd.h": "c",
+        "sysclock.h": "cpp",
+        "vectors.h": "c",
+        "stat.h": "c",
+        "common.h": "c",
+        "stm32f103xb.h": "c",
+        "Scheduler.h": "cpp",
+        "Arduino.h": "cpp",
+        "cstdio": "cpp",
+        "cstdlib": "cpp",
+        "cmath": "cpp"
+    },
+    "C_Cpp.intelliSenseEngineFallback": "Disabled",
+    "editor.tabSize": 2,
+    "editor.detectIndentation": false,
+    "editor.fontFamily": "'Ubuntu Mono','Droid Sans Mono', 'monospace', monospace, 'Droid Sans Fallback'",
+    "editor.fontSize": 15,
+}
