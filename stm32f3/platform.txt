@@ -16,20 +16,21 @@ build.arch=stm32f3
 build.compiler.defs=-DFIXMATH_NO_CACHE -DFIXMATH_NO_ROUNDING -DSTM32 -DSTM32F3 -DARM_MATH_CM4 {build.vect}
 build.compiler.includes=-I {build.system.path}/Drivers/CMSIS/Device/ST/STM32F3xx/Include -I {build.system.path}/Drivers/CMSIS/Include -I {build.system.path}/include
 build.compiler.lddir=-L "{build.variant.path}"
-build.compiler.rt_cflags=-specs=nano.specs
-build.compiler.rt_ldflags=-lm -specs=nosys.specs -specs=nano.specs
+build.compiler.rt_cflags=--specs=nano.specs
+build.compiler.rt_ldflags=-lm --specs=nosys.specs --specs=nano.specs
 build.compiler.ldflags=-nostartfiles
 build.compiler.path=
 build.compiler.prefix=arm-none-eabi-
 build.extra_flags=
 build.f_cpu=72000000L
 build.mcpu=cortex-m4
+build.fpu=
 build.opt_flag=-Os
 build.std_c=gnu11
 build.std_cpp=gnu++14
 
 #-------- adds 10k but gets floating point printf --------------------------------------------------
-#build.compiler.ldflags=-lm -nostartfiles -specs=nosys.specs -specs=nano.specs -u _printf_float -lm
+#build.compiler.ldflags=-lm -nostartfiles --specs=nosys.specs --specs=nano.specs -u _printf_float -lm
 
 compiler.warning_flags=-w
 compiler.warning_flags.none=-w
@@ -85,19 +86,19 @@ compiler.elf2hex.extra_flags=
 # --------------------
 
 ## Compile c files
-recipe.c.o.pattern="{compiler.path}{compiler.c.cmd}" {compiler.c.flags} -mcpu={build.mcpu} -mthumb -DF_CPU={build.f_cpu} -DARDUINO={runtime.ide.version} -DFABOOH_{build.board} "-DFABOOH_{build.arch}" -DFABOOH {compiler.c.extra_flags} {build.extra_flags} {includes} "{source_file}" -o "{object_file}"
+recipe.c.o.pattern="{compiler.path}{compiler.c.cmd}" {compiler.c.flags} -mthumb -mcpu={build.mcpu} {build.fpu} -DF_CPU={build.f_cpu} -DARDUINO={runtime.ide.version} -DFABOOH_{build.board} "-DFABOOH_{build.arch}" -DFABOOH {compiler.c.extra_flags} {build.extra_flags} {includes} "{source_file}" -o "{object_file}"
 
 ## Compile c++ files
-recipe.cpp.o.pattern="{compiler.path}{compiler.cpp.cmd}" {compiler.cpp.flags} -mcpu={build.mcpu} -mthumb -DF_CPU={build.f_cpu} -DARDUINO={runtime.ide.version} -DFABOOH_{build.board} "-DFABOOH_{build.arch}" -DFABOOH {compiler.cpp.extra_flags} {build.extra_flags} {includes} "{source_file}" -o "{object_file}"
+recipe.cpp.o.pattern="{compiler.path}{compiler.cpp.cmd}" {compiler.cpp.flags} -mthumb -mcpu={build.mcpu} {build.fpu} -DF_CPU={build.f_cpu} -DARDUINO={runtime.ide.version} -DFABOOH_{build.board} "-DFABOOH_{build.arch}" -DFABOOH {compiler.cpp.extra_flags} {build.extra_flags} {includes} "{source_file}" -o "{object_file}"
 
 ## Compile S files
-recipe.S.o.pattern="{compiler.path}{compiler.c.cmd}" {compiler.S.flags} -mcpu={build.mcpu} -mthumb -DF_CPU={build.f_cpu} -DARDUINO={runtime.ide.version} -DFABOOH_{build.board} "-DFABOOH_{build.arch}" -DFABOOH {compiler.S.extra_flags} {build.extra_flags} {includes} "{source_file}" -o "{object_file}"
+recipe.S.o.pattern="{compiler.path}{compiler.c.cmd}" {compiler.S.flags} -mthumb -mcpu={build.mcpu} {build.fpu} -DF_CPU={build.f_cpu} -DARDUINO={runtime.ide.version} -DFABOOH_{build.board} "-DFABOOH_{build.arch}" -DFABOOH {compiler.S.extra_flags} {build.extra_flags} {includes} "{source_file}" -o "{object_file}"
 
 ## Create archives
 recipe.ar.pattern="{compiler.path}{compiler.ar.cmd}" {compiler.ar.flags} {compiler.ar.extra_flags} "{archive_file_path}" "{object_file}"
 
 ## Combine gc-sections, archives, and objects
-recipe.c.combine.pattern="{compiler.path}{compiler.c.elf.cmd}" {compiler.c.elf.flags} -mcpu={build.mcpu} -mthumb {compiler.c.elf.extra_flags} {object_files} "{archive_file_path}" -L "{build.path}" {compiler.ld.dir} {compiler.ld.flags} "-Wl,--gc-sections,-Map,{build.path}/{build.project_name}.map" -o "{build.path}/{build.project_name}.elf"
+recipe.c.combine.pattern="{compiler.path}{compiler.c.elf.cmd}" {compiler.c.elf.flags} -mthumb -mcpu={build.mcpu} {build.fpu} {compiler.c.elf.extra_flags} {object_files} "{archive_file_path}" -L "{build.path}" {compiler.ld.dir} {compiler.ld.flags} "-Wl,--gc-sections,-Map,{build.path}/{build.project_name}.map" -o "{build.path}/{build.project_name}.elf"
 
 ## Create output files (.hex)
 recipe.objcopy.hex.pattern="{compiler.path}{compiler.elf2hex.cmd}" {compiler.elf2hex.flags} {compiler.elf2hex.extra_flags} "{build.path}/{build.project_name}.elf" "{build.path}/{build.project_name}.hex"
@@ -118,10 +119,10 @@ recipe.size.regex.eeprom=^(?:\.eeprom)\s+([0-9]+).*
 
 ## Preprocessor
 preproc.includes.flags=-w -x c++ -M -MG -MP
-recipe.preproc.includes="{compiler.path}{compiler.cpp.cmd}" {compiler.cpp.flags} {preproc.includes.flags} -mcpu={build.mcpu} -mthumb -DF_CPU={build.f_cpu} -DARDUINO={runtime.ide.version} -DFABOOH_{build.board} "-DFABOOH_{build.arch}" -DFABOOH {compiler.cpp.extra_flags} {build.extra_flags} {includes} "{source_file}"
+recipe.preproc.includes="{compiler.path}{compiler.cpp.cmd}" {compiler.cpp.flags} {preproc.includes.flags} -mthumb -mcpu={build.mcpu} {build.fpu} -DF_CPU={build.f_cpu} -DARDUINO={runtime.ide.version} -DFABOOH_{build.board} "-DFABOOH_{build.arch}" -DFABOOH {compiler.cpp.extra_flags} {build.extra_flags} {includes} "{source_file}"
 
 preproc.macros.flags=-w -x c++ -E -CC
-recipe.preproc.macros="{compiler.path}{compiler.cpp.cmd}" {compiler.cpp.flags} {preproc.macros.flags} -mcpu={build.mcpu} -mthumb -DF_CPU={build.f_cpu} -DARDUINO={runtime.ide.version} -DFABOOH_{build.board} "-DFABOOH_{build.arch}" -DFABOOH {compiler.cpp.extra_flags} {build.extra_flags} {includes} "{source_file}" -o "{preprocessed_file_path}"
+recipe.preproc.macros="{compiler.path}{compiler.cpp.cmd}" {compiler.cpp.flags} {preproc.macros.flags} -mthumb -mcpu={build.mcpu} {build.fpu} -DF_CPU={build.f_cpu} -DARDUINO={runtime.ide.version} -DFABOOH_{build.board} "-DFABOOH_{build.arch}" -DFABOOH {compiler.cpp.extra_flags} {build.extra_flags} {includes} "{source_file}" -o "{preprocessed_file_path}"
 
 # cortexm Uploader/Programmers tools
 # -----------------------------------

@@ -58,7 +58,7 @@ void setup() {
   // enable blackpill built-in led (PC13)
   wiringEx::pinModeEx(LED_BUILTIN,wiringEx::OUTPUT_OPEN_DRAIN,0b00);
   // set PA1 to Push Pull Alternate IO
-  pinModeEx(ws281x_pin,wiringEx::ALT_FUNC);  // TBD: the alt_id needs to be fixed
+  pinModeEx(ws281x_pin, wiringEx::ALT_FUNC, 0b11, 0b0001);  // PA1 TIM2_CH2=AF1, DMA1 Ch7
 }
 
 void loop() {
@@ -84,6 +84,7 @@ void loop() {
     const uint32_t m = millis();
     while ( !(DMA1->ISR & DMA_ISR_TCIF7) ) {
       if ((millis() - m) > 100) {
+        __asm__("nop");
         break;
       }
     }
@@ -136,7 +137,9 @@ enum {
   TIM_DCR_DBA_CCR2,
   TIM_DCR_DBA_CCR3,
   TIM_DCR_DBA_CCR4,
-  TIM_DCR_DBA_BDTR
+  TIM_DCR_DBA_BDTR,
+  TIM_DCR_DBA_DCR,
+  TIM_DCR_DBA_DMAR
 };
 
 //------------------------------------------------------
@@ -149,6 +152,7 @@ void dma_start() {
   pulse_t *src=dma_buffer;
   volatile uint32_t * dst=&TIM2->DMAR;
   uint32_t cnt=DMA_BUF_SIZE;
+
 
   //------------------------------------------------------------------
   // PA1 - DMA CH7 setup
@@ -210,6 +214,7 @@ void dma_start() {
 
   // turn on the timer
   TIM2->CR1 |= TIM_CR1_CEN;
+  TIM2->EGR |= TIM_EGR_UG;
 }
 
 //----------------------------------------------------------------------
@@ -219,6 +224,7 @@ void on_dma_complete()
 {
   // turn off the timer
   TIM2->CR1 &= ~TIM_CR1_CEN;
+  TIM2->CCR2 = 0;
 
   // turn off DMA CH7
   DMA1_Channel7->CCR &= ~DMA_CCR_EN;

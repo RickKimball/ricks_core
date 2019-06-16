@@ -34,7 +34,8 @@ namespace wiringEx {
     case ALT_FUNC:
     case OUTPUT_MCO:
       MODIFY_REG(GPIOx.OSPEEDR, PinToMask(pinNumber,2), (speed << moder_offset));
-      if ( OUTPUT_OPEN_DRAIN == pinMode ) {
+
+      if ( pinMode == OUTPUT_OPEN_DRAIN  ) {
         MODIFY_REG(GPIOx.MODER, PinToMask(pinNumber,2), (0b01U << moder_offset));
         SET_BIT(GPIOx.OTYPER, PinToMask(pinNumber,1));
       }
@@ -43,10 +44,8 @@ namespace wiringEx {
         MODIFY_REG(GPIOx.MODER, PinToMask(pinNumber,2), (0b01U << moder_offset));
       }
 
-      if ( !(pinMode == OUTPUT || pinMode == OUTPUT_OPEN_DRAIN) ) {
+      if ( (pinMode == ALT_FUNC || pinMode == OUTPUT_MCO) ) {
         const uint32_t afr_offset = (pinNumber % 8)*4;
-
-        MODIFY_REG(GPIOx.OSPEEDR, PinToMask(pinNumber,2), (speed << moder_offset));
 
         MODIFY_REG(GPIOx.MODER, PinToMask(pinNumber,2), (0b10U << moder_offset));
         MODIFY_REG( ((pinNumber % 16) < 8 ? GPIOx.AFR[0] : GPIOx.AFR[1]),

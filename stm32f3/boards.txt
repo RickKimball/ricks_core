@@ -1,6 +1,6 @@
 # See: http://code.google.com/p/arduino/wiki/Platforms
 
-menu.pnum=MCPU
+menu.mcpu=MCPU
 menu.mclk=MCLK
 menu.compiler=Compiler
 menu.std_c=C std
@@ -12,9 +12,8 @@ menu.uploader=Upload via
 #------------------------------------------------------
 robotdyn.vid.0=0x0483
 robotdyn.pid.0=0x374b
-robotdyn.name=RobotDyn F303CC Board
 
-#------------------------------------------------------
+robotdyn.name=RobotDyn F303CC Board
 robotdyn.build.core=arduino
 robotdyn.build.board=ROBOTDYN_STM32F303CC
 robotdyn.build.vect=-DVECT_TAB_OFFSET=0x08000000
@@ -61,13 +60,14 @@ robotdyn.menu.mclk.16.build.f_cpu=80000000L
 #robotdyn.menu.mclk.18.build.f_cpu=96000000L
 
 #------------------------------------------------------
-robotdyn.menu.pnum.robotdyn_f303cc=stm32F303cc (256k/20k)
-robotdyn.menu.pnum.robotdyn_f303cc.build.board=robotdyn_f303cc
-robotdyn.menu.pnum.robotdyn_f303cc.build.ldscript=-Tstm32f303cc.ld
-robotdyn.menu.pnum.robotdyn_f303cc.build.mcu=cortex-m4
-robotdyn.menu.pnum.robotdyn_f303cc.build.variant=robotdyn_f303cc
-robotdyn.menu.pnum.robotdyn_f303cc.upload.maximum_data_size=40960
-robotdyn.menu.pnum.robotdyn_f303cc.upload.maximum_size=262144
+robotdyn.menu.mcpu.robotdyn_f303cc=stm32F303cc (256k/40k)
+robotdyn.menu.mcpu.robotdyn_f303cc.build.board=robotdyn_f303cc
+robotdyn.menu.mcpu.robotdyn_f303cc.build.ldscript=-Tstm32f303cc.ld
+robotdyn.menu.mcpu.robotdyn_f303cc.build.mcpu=cortex-m4
+robotdyn.menu.mcpu.robotdyn_f303cc.build.fpu=-mfloat-abi=hard -mfpu=fpv4-sp-d16
+robotdyn.menu.mcpu.robotdyn_f303cc.build.variant=robotdyn_f303cc
+robotdyn.menu.mcpu.robotdyn_f303cc.upload.maximum_data_size=40960
+robotdyn.menu.mcpu.robotdyn_f303cc.upload.maximum_size=262144
 
 #------------------------------------------------------
 robotdyn.menu.compiler.0=arm-none-eabi-gcc

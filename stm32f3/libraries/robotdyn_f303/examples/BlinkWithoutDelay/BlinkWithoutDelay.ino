@@ -1,11 +1,9 @@
 /*
-  ESP8266 BlinkWithoutDelay by Simon Peter
-  Blink the blue LED on the ESP-01 module
+  Blink the blue LED on the RobotDyn stm32f303cc board
   Based on the Arduino Blink without Delay example
   This example code is in the public domain
 
-  The blue LED on the ESP-01 module is connected to GPIO1
-  (which is also the TXD pin; so we cannot use Serial.print() at the same time)
+  The blue LED on the RobotDyn stm32f303cc is connected to PC13
 
   Note that this sketch uses LED_BUILTIN to find the pin with the internal LED
 */

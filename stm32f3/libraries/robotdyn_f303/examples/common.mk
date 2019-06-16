@@ -10,8 +10,8 @@ OPENOCD_LOG   = $(BUILD_DIR)/openocd.log
 HEX := build/$(TARGET).ino.hex
 
 all: build
-	$(ARDUINO_DIR)/arduino-builder -compile \
-	-fqbn=ricks_core:stm32f3:robotdyn:pnum=robotdyn_f303cc,uploader=openocd \
+	$(ARDUINO_DIR)/arduino-builder -compile $(V) \
+	-fqbn=ricks_core:stm32f3:robotdyn:mcpu=robotdyn_f303cc,uploader=openocd \
 	-ide-version=10809 -warnings=all \
 	-hardware $(ARDUINO_DIR)/hardware \
 	-tools $(ARDUINO_DIR)/tools-builder \

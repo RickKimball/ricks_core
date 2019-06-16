@@ -85,13 +85,16 @@ void _init(void) {
                | RCC_AHBENR_GPIOBEN
                | RCC_AHBENR_GPIOCEN
                | RCC_AHBENR_GPIOEEN
+               | RCC_AHBENR_DMA1EN
                ;
 
   RCC->APB2ENR |= 0
+               | RCC_APB2ENR_SYSCFGEN
                | RCC_APB2ENR_USART1EN           /* USART1         */
                ;
 
   RCC->APB1ENR |= 0
+               | RCC_APB1ENR_TIM2EN
                | RCC_APB1ENR_PWREN
                ;
 

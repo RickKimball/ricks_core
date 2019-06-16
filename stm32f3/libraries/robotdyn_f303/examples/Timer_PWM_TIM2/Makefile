@@ -1,5 +1,5 @@
 ARDUINO_DIR ?= $(HOME)/arduino-1.8.9
-TARGET ?= BlinkWithoutDelay
+TARGET ?= Timer_PWM_TIM2
 
 include ../common.mk
 

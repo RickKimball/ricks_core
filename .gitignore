@@ -32,5 +32,5 @@
 *.app
 
 # vscode generated
-.vscode/ipch
+/stm32f3/.vscode/ipch
 *.ipch
